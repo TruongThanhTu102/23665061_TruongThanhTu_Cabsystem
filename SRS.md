@@ -1953,3 +1953,57 @@ flowchart LR
 
 - **E1:** Nhân viên không có quyền → Từ chối thao tác.
 - **E2:** Không tìm thấy thông tin chuyến → Hệ thống thông báo lỗi.
+# 3. Tiêu chí chấp nhận (Acceptance Criteria - AC)
+
+Các tiêu chí chấp nhận dưới đây được xây dựng dựa trên các yêu cầu nghiệp vụ và Use Case đã xác định, đảm bảo hệ thống đáp ứng đúng kỳ vọng của khách hàng và doanh nghiệp.
+
+---
+
+##  AC cho Quy trình Đặt xe (Booking Flow)
+
+| ID | Tiêu chí chấp nhận | Điều kiện tiên quyết (Pre-condition) | Kết quả mong đợi (Post-condition) |
+| :--- | :--- | :--- | :--- |
+| **AC-01** | **Tìm kiếm xe thành công:** Hệ thống hiển thị danh sách các tài xế/xe đang hoạt động dựa trên vị trí hiện tại của khách hàng và các tiêu chí lọc (ví dụ: loại xe, khoảng cách). | Khách hàng đã đăng nhập và bật định vị GPS. | Danh sách xe hiển thị đúng vị trí, trạng thái sẵn sàng và được sắp xếp theo khoảng cách gần nhất. |
+| **AC-02** | **Gửi yêu cầu đặt xe thành công:** Khi khách hàng chọn xe và bấm "Đặt xe", hệ thống gửi yêu cầu tới tài xế đã chọn (hoặc broadcast tới các tài xế gần nhất tùy cơ chế). | Khách hàng đã chọn được điểm đón, điểm đến và loại xe. | 1. Hệ thống hiển thị trạng thái "Đang tìm tài xế" trên app KH.<br>2. Tài xế nhận được thông báo yêu cầu chuyến mới. |
+| **AC-03** | **Hệ thống tự động từ chối yêu cầu khi hết thời gian:** Sau khoảng thời gian hệ thống quy định (ví dụ: 60 giây) mà không có tài xế nhận đơn, hệ thống tự động thông báo "Không tìm thấy tài xế, vui lòng thử lại" cho khách hàng. | Yêu cầu đã được gửi nhưng chưa có tài xế nào chấp nhận. | 1. Trạng thái chuyến chuyển sang "Thất bại".<br>2. Khách hàng nhận được thông báo lỗi trên màn hình. |
+| **AC-04** | **Tài xế chấp nhận chuyến thành công:** Tài xế bấm nút "Nhận chuyến", hệ thống cập nhật trạng thái. | Tài xế đang online và nhận được thông báo yêu cầu. | 1. Tài xế được gán vào chuyến.<br>2. Khách hàng nhận được thông báo "Đã tìm thấy tài xế" kèm theo thông tin tài xế (tên, biển số xe, đánh giá). |
+| **AC-05** | **Hủy chuyến đi từ phía Khách hàng:** Khách hàng có thể hủy chuyến trước khi tài xế nhận đơn hoặc trong giai đoạn cho phép (ví dụ: trước khi tài xế đến đón). | Chuyến đang ở trạng thái "Đang tìm xe" hoặc "Đã có tài xế". | 1. Chuyến bị hủy trên hệ thống.<br>2. Tài xế nhận được thông báo chuyến đã bị khách hủy.<br>3. Ghi nhận lý do hủy (nếu có) vào lịch sử. |
+
+---
+
+##  AC cho Quy trình Tài xế thực hiện chuyến đi (Trip Execution)
+
+| ID | Tiêu chí chấp nhận | Điều kiện tiên quyết (Pre-condition) | Kết quả mong đợi (Post-condition) |
+| :--- | :--- | :--- | :--- |
+| **AC-06** | **Cập nhật trạng thái di chuyển:** Tài xế có thể cập nhật các trạng thái: "Đã đón khách", "Bắt đầu di chuyển", "Kết thúc chuyến" trên App Tài xế. | Tài xế đã nhận chuyến thành công. | 1. Trạng thái chuyến được cập nhật trên hệ thống.<br>2. App Khách hàng cập nhật trạng thái tương ứng (ví dụ: "Đã đón khách", "Đang di chuyển"). |
+| **AC-07** | **Tính năng hỗ trợ/hủy đơn từ phía Tài xế (Sự cố):** Tài xế gặp sự cố có thể yêu cầu hủy chuyến. Yêu cầu này phải được gửi đến nhân viên vận hành (System Admin) để duyệt, không tự động hủy ngay lập tức. | Tài xế đang thực hiện chuyến và bấm nút "Gặp sự cố/Hủy chuyến". | 1. Yêu cầu hủy được gửi vào hệ thống quản trị.<br>2. Nhân viên vận hành nhận được thông báo và yêu cầu xử lý.<br>3. Chuyến chỉ bị hủy sau khi Admin xác nhận. |
+| **AC-08** | **Tính toán chi phí chuyến đi tự động:** Hệ thống tính toán chính xác cước phí dựa trên quãng đường và thời gian di chuyển thực tế khi Tài xế bấm "Kết thúc chuyến". | Tài xế đã bấm nút "Kết thúc chuyến". | 1. Hóa đơn chi tiết được tạo (Km, thời gian, phí cơ bản, phụ phí).<br>2. Hiển thị chi phí lên App Khách hàng để xác nhận thanh toán. |
+
+---
+
+## AC cho Quy trình Thanh toán (Payment)
+
+| ID | Tiêu chí chấp nhận | Điều kiện tiên quyết (Pre-condition) | Kết quả mong đợi (Post-condition) |
+| :--- | :--- | :--- | :--- |
+| **AC-09** | **Thanh toán qua nhiều phương thức:** Khách hàng có thể chọn thanh toán bằng: (1) Tiền mặt, (2) Thẻ tín dụng/ghi nợ, (3) Ví điện tử (nếu hệ thống có tích hợp). | Chuyến đã kết thúc và hiển thị hóa đơn. | 1. Giao diện thanh toán hiển thị các tùy chọn.<br>2. Khách hàng chọn và thực hiện thành công. |
+| **AC-10** | **Đồng bộ trạng thái thanh toán và dữ liệu tài chính:** Khi khách hàng thanh toán, trạng thái chuyến được chuyển sang "Đã thanh toán" hoặc "Thành công". Hệ thống ghi nhận doanh thu và cập nhật số dư (nếu ví nội bộ). | Giao dịch thanh toán thành công từ cổng thanh toán. | 1. Trạng thái chuyến cập nhật đúng.<br>2. Báo cáo tài chính/Doanh thu được cập nhật.<br>3. Gửi hóa đơn điện tử (receipt) đến email/SMS cho khách hàng. |
+| **AC-11** | **Xử lý thanh toán thất bại:** Nếu cổng thanh toán (Ví dụ: thẻ hết tiền, lỗi kết nối) trả về thất bại, hệ thống phải hiển thị thông báo lỗi rõ ràng cho Khách hàng và cho phép thử lại hoặc chuyển sang thanh toán tiền mặt. | Khách hàng chọn thanh toán online nhưng gặp lỗi. | 1. Hiển thị popup thông báo lỗi (nêu rõ lý do).<br>2. Không đánh dấu chuyến là "Đã thanh toán".<br>3. Cho phép đổi phương thức thanh toán. |
+
+---
+
+## AC cho Hệ thống Quản lý & Báo cáo (Admin & Management)
+
+| ID | Tiêu chí chấp nhận | Điều kiện tiên quyết (Pre-condition) | Kết quả mong đợi (Post-condition) |
+| :--- | :--- | :--- | :--- |
+| **AC-12** | **Phân quyền truy cập hệ thống (Role-Based):** Hệ thống phân quyền rõ ràng giữa Nhân viên vận hành và Ban lãnh đạo.<br>- Nhân viên vận hành: Được quyền duyệt hủy đơn, xem tình trạng xe trực tiếp.<br>- Ban lãnh đạo: Được quyền xem các báo cáo tài chính, thống kê. | Người dùng quản trị đăng nhập vào Admin Dashboard. | Menu/quyền truy cập hiển thị chính xác theo tài khoản (không hiển thị tính năng không có quyền). |
+| **AC-13** | **Thống kê và Báo cáo thời gian thực (Dashboard):** Hệ thống cho phép Ban lãnh đạo/Nhân viên xem các số liệu: Số lượng chuyến đi thành công, Tổng doanh thu, Tỷ lệ hủy chuyến, Số lượng tài xế đang hoạt động theo các khoảng thời gian (ngày, tuần, tháng). | Ban lãnh đạo truy cập vào tab "Báo cáo". | Biểu đồ và bảng số liệu hiển thị chính xác, dữ liệu được lấy từ cơ sở dữ liệu thời gian thực (hoặc cache gần thời gian thực). |
+| **AC-14** | **Quản lý trạng thái xe/Tài xế (Live Tracking):** Nhân viên vận hành có thể xem bản đồ (map view) hiển thị vị trí và trạng thái hoạt động (Online/Offline/Bận) của tất cả tài xế. | Nhân viên vận hành đăng nhập vào hệ thống Admin. | Bản đồ hiển thị biểu tượng tài xế có màu sắc/trạng thái khác nhau, cập nhật thông tin vị trí liên tục (độ trễ cho phép tối đa 5-10 giây). |
+
+---
+
+##  AC cho Bảo mật và Hiệu năng (Non-functional)
+
+| ID | Tiêu chí chấp nhận | Mô tả chi tiết | Điều kiện đánh giá |
+| :--- | :--- | :--- | :--- |
+| **AC-15** | **Xác thực và Bảo mật dữ liệu:** Tất cả quy trình đăng nhập, giao dịch thanh toán, và truyền dữ liệu vị trí phải được mã hóa theo chuẩn bảo mật (ví dụ: SSL/HTTPS). | Dữ liệu khách hàng, tài xế, và lịch sử giao dịch phải được bảo vệ. | Không có lỗ hổng bảo mật SQL Injection, XSS (dựa trên kết quả quét bảo mật cơ bản). |
+| **AC-16** | **Thời gian phản hồi hệ thống:** Hệ thống đáp ứng nhanh, thời gian xử lý yêu cầu đặt xe và tìm kiếm tài xế (từ khi KH bấm Đặt xe đến khi Tài xế nhận được thông báo) không quá **3 giây**. | Đảm bảo trải nghiệm người dùng mượt mà. | Dùng công cụ test hiệu năng (JMeter) với 100 yêu cầu đồng thời, thời gian phản hồi trung bình (Average Response Time) dưới 3s. |
