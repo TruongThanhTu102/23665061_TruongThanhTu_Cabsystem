@@ -172,7 +172,7 @@ Xây dựng một nền tảng đặt xe có khả năng hoạt động ổn đ�
         │                 │                 │
         │  QUẢN LÝ CHẶT   │  QUẢN LÝ CHẶT   │
         │                 │                 │
-        │  Ban giám đốc    │  Ban giám đốc   │
+        │  Ban giám đốc   │  Ban giám đốc   │
         │                 │  Nhân viên       │
         │                 │  vận hành        │
         │                 │                 │
