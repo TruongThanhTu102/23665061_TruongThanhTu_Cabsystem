@@ -1561,3 +1561,394 @@ Hệ thống phải có khả năng mở rộng để:
 
 - Hệ thống phải lưu vết các thao tác quan trọng.
 - Thông tin lưu vết được sử dụng để kiểm tra và xử lý khi xảy ra sự cố.
+
+# Vẽ các Use Case
+
+    %% Actors
+    Customer([Khách hàng])
+    Driver([Tài xế])
+    Staff([Nhân viên vận hành])
+    Payment([Nhà cung cấp thanh toán])
+    Notification([Nhà cung cấp dịch vụ thông báo])
+
+    %% System
+    subgraph CAB["CAB System"]
+
+        UC1((Quản lý tài khoản))
+        UC2((Đặt xe))
+        UC3((Theo dõi chuyến đi))
+        UC4((Thanh toán))
+        UC5((Đánh giá tài xế))
+
+        UC6((Quản lý tài xế))
+        UC7((Quản lý phương tiện))
+        UC8((Nhận / từ chối chuyến))
+        UC9((Cập nhật trạng thái chuyến))
+        UC10((Cập nhật vị trí))
+
+        UC11((Tìm kiếm tài xế))
+        UC12((Phân công tài xế))
+
+        UC13((Quản lý chuyến đi))
+        UC14((Quản lý khách hàng))
+        UC15((Tra cứu giao dịch))
+        UC16((Xử lý chuyến bị lỗi))
+        UC17((Báo cáo))
+
+        UC18((Gửi thông báo))
+    end
+
+    %% Customer
+    Customer --> UC1
+    Customer --> UC2
+    Customer --> UC3
+    Customer --> UC4
+    Customer --> UC5
+
+    %% Driver
+    Driver --> UC1
+    Driver --> UC8
+    Driver --> UC9
+    Driver --> UC10
+
+    %% Staff
+    Staff --> UC6
+    Staff --> UC7
+    Staff --> UC13
+    Staff --> UC14
+    Staff --> UC15
+    Staff --> UC16
+    Staff --> UC17
+
+    %% External systems
+    Payment --> UC4
+    Notification --> UC18
+
+    %% Booking process
+    UC2 --> UC11
+    UC11 --> UC12
+    UC12 --> UC8
+
+    %% Trip
+    UC8 --> UC13
+    UC9 --> UC13
+
+    %% Notification
+    UC2 --> UC18
+    UC8 --> UC18
+    UC9 --> UC18
+    UC4 --> UC18
+``
+# ĐẶC TẢ USE CASE
+
+## UC01 – Đăng ký tài khoản
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Đăng ký tài khoản |
+| **Mã** | UC01 |
+| **Actor** | Khách hàng |
+| **Mục tiêu** | Tạo tài khoản để sử dụng các chức năng của hệ thống CAB |
+| **Tiền điều kiện** | Khách hàng chưa có tài khoản |
+| **Hậu điều kiện** | Tài khoản khách hàng được tạo thành công |
+| **Kích hoạt** | Khách hàng chọn chức năng đăng ký |
+
+### Luồng chính
+
+1. Khách hàng chọn **Đăng ký**.
+2. Hệ thống yêu cầu nhập thông tin tài khoản.
+3. Khách hàng nhập thông tin cá nhân.
+4. Khách hàng gửi thông tin đăng ký.
+5. Hệ thống kiểm tra thông tin.
+6. Hệ thống tạo tài khoản.
+7. Hệ thống thông báo đăng ký thành công.
+
+### Luồng ngoại lệ
+
+- **E1:** Thông tin đăng ký không hợp lệ → Hệ thống yêu cầu khách hàng nhập lại.
+- **E2:** Tài khoản đã tồn tại → Hệ thống thông báo và yêu cầu sử dụng thông tin khác.
+
+---
+
+# UC02 – Đặt xe
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Đặt xe |
+| **Mã** | UC02 |
+| **Actor** | Khách hàng |
+| **Mục tiêu** | Tạo yêu cầu đặt xe và tìm được tài xế phù hợp |
+| **Tiền điều kiện** | Khách hàng đã đăng nhập |
+| **Hậu điều kiện** | Chuyến được tạo và tài xế được phân công hoặc khách hàng được thông báo không tìm được tài xế |
+| **Kích hoạt** | Khách hàng gửi yêu cầu đặt xe |
+
+### Luồng chính
+
+1. Khách hàng nhập **điểm đón**.
+2. Khách hàng nhập **điểm đến**.
+3. Khách hàng lựa chọn **loại xe**.
+4. Khách hàng gửi yêu cầu đặt xe.
+5. Hệ thống tiếp nhận yêu cầu.
+6. Hệ thống tìm kiếm tài xế phù hợp.
+7. Hệ thống gửi yêu cầu chuyến đến tài xế.
+8. Tài xế chấp nhận chuyến.
+9. Hệ thống phân công tài xế.
+10. Hệ thống thông báo cho khách hàng.
+11. Khách hàng theo dõi trạng thái chuyến.
+
+### Luồng ngoại lệ
+
+- **E1:** Tài xế từ chối chuyến → Hệ thống tiếp tục tìm tài xế khác.
+- **E2:** Tài xế không phản hồi → Hệ thống tiếp tục tìm tài xế khác.
+- **E3:** Không tìm được tài xế → Hệ thống thông báo cho khách hàng.
+- **E4:** Thông tin đặt xe không hợp lệ → Hệ thống yêu cầu khách hàng nhập lại.
+
+---
+
+# UC03 – Theo dõi chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Theo dõi chuyến đi |
+| **Mã** | UC03 |
+| **Actor** | Khách hàng |
+| **Mục tiêu** | Cho phép khách hàng theo dõi trạng thái chuyến |
+| **Tiền điều kiện** | Khách hàng đã có chuyến được phân công |
+| **Hậu điều kiện** | Khách hàng xem được trạng thái hiện tại của chuyến |
+| **Kích hoạt** | Khách hàng mở thông tin chuyến |
+
+### Luồng chính
+
+1. Khách hàng mở chuyến đang thực hiện.
+2. Hệ thống lấy thông tin chuyến.
+3. Hệ thống hiển thị tài xế đã nhận chuyến.
+4. Hệ thống hiển thị thời gian dự kiến tài xế đến.
+5. Hệ thống hiển thị trạng thái hiện tại của chuyến.
+6. Khách hàng tiếp tục theo dõi cho đến khi chuyến hoàn thành.
+
+### Luồng ngoại lệ
+
+- **E1:** Không lấy được thông tin chuyến → Hệ thống thông báo lỗi.
+- **E2:** Không có dữ liệu vị trí mới → Hệ thống hiển thị thông tin vị trí gần nhất.
+
+---
+
+# UC04 – Nhận / từ chối chuyến
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Nhận / từ chối chuyến |
+| **Mã** | UC04 |
+| **Actor** | Tài xế |
+| **Mục tiêu** | Cho phép tài xế phản hồi yêu cầu chuyến |
+| **Tiền điều kiện** | Tài xế đang ở trạng thái sẵn sàng nhận chuyến |
+| **Hậu điều kiện** | Chuyến được tài xế chấp nhận hoặc hệ thống tiếp tục tìm tài xế khác |
+| **Kích hoạt** | Tài xế nhận được yêu cầu chuyến |
+
+### Luồng chính
+
+1. Hệ thống gửi thông báo chuyến mới cho tài xế.
+2. Tài xế xem thông tin chuyến.
+3. Tài xế chọn **Chấp nhận**.
+4. Hệ thống ghi nhận tài xế nhận chuyến.
+5. Hệ thống phân công tài xế.
+6. Hệ thống thông báo cho khách hàng.
+
+### Luồng thay thế
+
+**Tài xế từ chối:**
+
+1. Tài xế chọn **Từ chối**.
+2. Hệ thống ghi nhận tài xế từ chối.
+3. Hệ thống tiếp tục tìm tài xế khác.
+
+**Tài xế không phản hồi:**
+
+1. Tài xế không phản hồi yêu cầu.
+2. Hệ thống xác định yêu cầu không được phản hồi.
+3. Hệ thống tiếp tục tìm tài xế khác.
+
+### Luồng ngoại lệ
+
+- **E1:** Tài xế không còn ở trạng thái sẵn sàng → Không cho phép nhận chuyến.
+- **E2:** Hệ thống không thể xử lý phản hồi → Thông báo lỗi và ghi nhận sự cố.
+
+---
+
+# UC05 – Cập nhật trạng thái chuyến
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Cập nhật trạng thái chuyến |
+| **Mã** | UC05 |
+| **Actor** | Tài xế |
+| **Mục tiêu** | Cập nhật trạng thái chuyến trong quá trình thực hiện |
+| **Tiền điều kiện** | Tài xế đã được phân công chuyến |
+| **Hậu điều kiện** | Trạng thái chuyến được cập nhật |
+| **Kích hoạt** | Tài xế thực hiện một giai đoạn của chuyến |
+
+### Luồng chính
+
+1. Tài xế bắt đầu thực hiện chuyến.
+2. Tài xế cập nhật **Đã đến điểm đón**.
+3. Tài xế cập nhật **Đã đón khách**.
+4. Tài xế cập nhật **Đang di chuyển**.
+5. Tài xế cập nhật **Hoàn thành chuyến**.
+6. Hệ thống lưu trạng thái.
+7. Hệ thống thông báo trạng thái phù hợp cho khách hàng.
+
+### Luồng ngoại lệ
+
+- **E1:** Không thể cập nhật trạng thái → Hệ thống thông báo lỗi.
+- **E2:** Trạng thái không hợp lệ → Hệ thống từ chối cập nhật.
+
+---
+
+# UC06 – Thanh toán
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Thanh toán |
+| **Mã** | UC06 |
+| **Actor** | Khách hàng |
+| **Actor phụ** | Nhà cung cấp thanh toán |
+| **Mục tiêu** | Thanh toán số tiền của chuyến đi |
+| **Tiền điều kiện** | Chuyến đi đã hoàn thành và hệ thống đã xác định số tiền phải trả |
+| **Hậu điều kiện** | Giao dịch được ghi nhận thành công hoặc thất bại |
+| **Kích hoạt** | Khách hàng thực hiện thanh toán |
+
+### Luồng chính – Thanh toán điện tử
+
+1. Hệ thống hiển thị số tiền cần thanh toán.
+2. Khách hàng chọn thanh toán điện tử.
+3. Hệ thống gửi yêu cầu đến nhà cung cấp thanh toán.
+4. Nhà cung cấp xử lý giao dịch.
+5. Nhà cung cấp trả kết quả.
+6. Hệ thống ghi nhận kết quả giao dịch.
+7. Hệ thống thông báo kết quả cho khách hàng.
+
+### Luồng thay thế – Thanh toán tiền mặt
+
+1. Khách hàng chọn thanh toán tiền mặt.
+2. Khách hàng thanh toán cho tài xế.
+3. Hệ thống ghi nhận kết quả thanh toán.
+
+### Luồng ngoại lệ
+
+- **E1:** Thanh toán điện tử thất bại → Hệ thống thông báo cho khách hàng.
+- **E2:** Khách hàng cần thực hiện lại thanh toán → Hệ thống cho phép xử lý lại theo chính sách doanh nghiệp.
+- **E3:** Nhà cung cấp thanh toán không phản hồi → Hệ thống ghi nhận giao dịch ở trạng thái phù hợp và xử lý theo quy định.
+
+---
+
+# UC07 – Đánh giá tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Đánh giá tài xế |
+| **Mã** | UC07 |
+| **Actor** | Khách hàng |
+| **Mục tiêu** | Cho phép khách hàng đánh giá tài xế sau chuyến đi |
+| **Tiền điều kiện** | Chuyến đi đã hoàn thành |
+| **Hậu điều kiện** | Đánh giá được lưu vào hệ thống |
+| **Kích hoạt** | Khách hàng chọn chức năng đánh giá |
+
+### Luồng chính
+
+1. Khách hàng mở thông tin chuyến đã hoàn thành.
+2. Hệ thống hiển thị chức năng đánh giá.
+3. Khách hàng nhập đánh giá.
+4. Khách hàng gửi đánh giá.
+5. Hệ thống kiểm tra thông tin.
+6. Hệ thống lưu đánh giá.
+7. Hệ thống thông báo đánh giá thành công.
+
+### Luồng ngoại lệ
+
+- **E1:** Chuyến chưa hoàn thành → Không cho phép đánh giá.
+- **E2:** Thông tin đánh giá không hợp lệ → Yêu cầu khách hàng nhập lại.
+
+---
+
+# UC08 – Quản lý khách hàng
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Quản lý khách hàng |
+| **Mã** | UC08 |
+| **Actor** | Nhân viên vận hành |
+| **Mục tiêu** | Quản lý thông tin khách hàng |
+| **Tiền điều kiện** | Nhân viên đã đăng nhập và có quyền quản lý |
+| **Hậu điều kiện** | Thông tin khách hàng được cập nhật |
+| **Kích hoạt** | Nhân viên chọn chức năng quản lý khách hàng |
+
+### Luồng chính
+
+1. Nhân viên mở danh sách khách hàng.
+2. Hệ thống hiển thị thông tin khách hàng.
+3. Nhân viên thực hiện thao tác quản lý.
+4. Hệ thống kiểm tra quyền.
+5. Hệ thống thực hiện thao tác.
+6. Hệ thống lưu thay đổi.
+
+### Luồng ngoại lệ
+
+- **E1:** Nhân viên không có quyền → Từ chối thao tác.
+- **E2:** Dữ liệu không hợp lệ → Hệ thống yêu cầu nhập lại.
+
+---
+
+# UC09 – Quản lý tài xế
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Quản lý tài xế |
+| **Mã** | UC09 |
+| **Actor** | Nhân viên vận hành |
+| **Mục tiêu** | Quản lý thông tin và trạng thái tài xế |
+| **Tiền điều kiện** | Nhân viên đã đăng nhập và có quyền |
+| **Hậu điều kiện** | Thông tin tài xế được cập nhật |
+| **Kích hoạt** | Nhân viên chọn chức năng quản lý tài xế |
+
+### Luồng chính
+
+1. Nhân viên mở danh sách tài xế.
+2. Hệ thống hiển thị thông tin tài xế.
+3. Nhân viên chọn tài xế.
+4. Nhân viên xem hoặc cập nhật thông tin.
+5. Hệ thống kiểm tra quyền.
+6. Hệ thống lưu thay đổi.
+
+### Luồng ngoại lệ
+
+- **E1:** Không có quyền → Từ chối thao tác.
+- **E2:** Dữ liệu không hợp lệ → Yêu cầu nhập lại.
+
+---
+
+# UC10 – Theo dõi và quản lý chuyến đi
+
+| Thành phần | Nội dung |
+|---|---|
+| **Tên Use Case** | Theo dõi và quản lý chuyến đi |
+| **Mã** | UC10 |
+| **Actor** | Nhân viên vận hành |
+| **Mục tiêu** | Theo dõi và hỗ trợ xử lý các chuyến đang diễn ra |
+| **Tiền điều kiện** | Nhân viên đã đăng nhập và có quyền |
+| **Hậu điều kiện** | Nhân viên xem được trạng thái chuyến hoặc xử lý sự cố |
+| **Kích hoạt** | Nhân viên mở chức năng quản lý chuyến |
+
+### Luồng chính
+
+1. Nhân viên mở danh sách chuyến.
+2. Hệ thống hiển thị các chuyến đang diễn ra.
+3. Nhân viên chọn một chuyến.
+4. Hệ thống hiển thị thông tin chuyến.
+5. Nhân viên kiểm tra trạng thái.
+6. Nếu có sự cố, nhân viên thực hiện xử lý theo quyền được cấp.
+7. Hệ thống lưu vết thao tác.
+
+### Luồng ngoại lệ
+
+- **E1:** Nhân viên không có quyền → Từ chối thao tác.
+- **E2:** Không tìm thấy thông tin chuyến → Hệ thống thông báo lỗi.
