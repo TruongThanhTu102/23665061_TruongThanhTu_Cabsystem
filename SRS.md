@@ -1953,7 +1953,8 @@ flowchart LR
 
 - **E1:** Nhân viên không có quyền → Từ chối thao tác.
 - **E2:** Không tìm thấy thông tin chuyến → Hệ thống thông báo lỗi.
-# 3. Tiêu chí chấp nhận (Acceptance Criteria - AC)
+  
+# Tiêu chí chấp nhận (Acceptance Criteria - AC)
 
 Các tiêu chí chấp nhận dưới đây được xây dựng dựa trên các yêu cầu nghiệp vụ và Use Case đã xác định, đảm bảo hệ thống đáp ứng đúng kỳ vọng của khách hàng và doanh nghiệp.
 
@@ -2007,3 +2008,43 @@ Các tiêu chí chấp nhận dưới đây được xây dựng dựa trên cá
 | :--- | :--- | :--- | :--- |
 | **AC-15** | **Xác thực và Bảo mật dữ liệu:** Tất cả quy trình đăng nhập, giao dịch thanh toán, và truyền dữ liệu vị trí phải được mã hóa theo chuẩn bảo mật (ví dụ: SSL/HTTPS). | Dữ liệu khách hàng, tài xế, và lịch sử giao dịch phải được bảo vệ. | Không có lỗ hổng bảo mật SQL Injection, XSS (dựa trên kết quả quét bảo mật cơ bản). |
 | **AC-16** | **Thời gian phản hồi hệ thống:** Hệ thống đáp ứng nhanh, thời gian xử lý yêu cầu đặt xe và tìm kiếm tài xế (từ khi KH bấm Đặt xe đến khi Tài xế nhận được thông báo) không quá **3 giây**. | Đảm bảo trải nghiệm người dùng mượt mà. | Dùng công cụ test hiệu năng (JMeter) với 100 yêu cầu đồng thời, thời gian phản hồi trung bình (Average Response Time) dưới 3s. |
+
+# Tiêu chí chấp nhận (Acceptance Criteria - AC)
+
+Phần này trình bày các tiêu chí chấp nhận chi tiết, kèm theo truy xuất nguồn gốc yêu cầu để đảm bảo tính bao phủ đầy đủ của hệ thống.
+
+## Tiêu chí chấp nhận Chức năng (Functional AC)
+
+| ID | Tiêu chí chấp nhận | Nguồn gốc yêu cầu (Requirement Source) | Điều kiện tiên quyết | Kết quả mong đợi (Post-condition) |
+| :--- | :--- | :--- | :--- | :--- |
+| **AC-01** | Đăng ký tài khoản thành công: Người dùng mới đăng ký và hệ thống gửi mã xác thực OTP. | **Khách hàng & Tài xế** cần đăng ký tài khoản để sử dụng hệ thống. | Người dùng chưa có tài khoản. | Tài khoản được tạo sau khi xác thực OTP đúng. Nếu SĐT/Email đã tồn tại, hệ thống báo lỗi. |
+| **AC-02** | Đăng nhập và phân quyền truy cập: Tài khoản KH/Tài xế đăng nhập vào App; tài khoản Nhân viên/Lãnh đạo đăng nhập vào Admin Portal. | **Phân quyền** theo yêu cầu: Nhân viên vận hành quản lý xe, Ban lãnh đạo xem báo cáo. | Tài khoản đã tồn tại và kích hoạt. | Sai mật khẩu quá 5 lần -> Khóa tạm thời. Người dùng được chuyển hướng đến đúng giao diện theo vai trò. |
+| **AC-03** | Tìm kiếm và hiển thị xe: Hệ thống tìm xe dựa trên GPS, lọc theo khoảng cách và tiêu chí của KH. | **Tìm kiếm xe** theo yêu cầu "Tìm xe dựa trên vị trí và tiêu chí". | Khách hàng đã đăng nhập và bật GPS. | Danh sách xe hiển thị đúng kèm thông tin: Khoảng cách, loại xe, đánh giá, trạng thái sẵn sàng. |
+| **AC-04** | Gửi yêu cầu đặt xe thành công: Khách hàng bấm "Đặt xe" -> Hệ thống gửi tới các tài xế gần nhất. | **Gửi yêu cầu đặt xe** theo mô tả luồng nghiệp vụ. | KH đã chọn điểm đón, điểm đến và loại xe. | App KH hiển thị trạng thái "Đang tìm tài xế". App Tài xế nhận được thông báo yêu cầu mới. |
+| **AC-05** | Tự động hủy yêu cầu khi hết thời gian chờ (Timeout): Hệ thống tự động hủy khi hết thời gian quy định mà không có TX nhận đơn. | **Không tìm thấy tài xế** (Mô tả: Hết thời gian chờ sẽ bị từ chối). | Yêu cầu đã gửi nhưng hết thời gian chờ (60s). | Trạng thái chuyển sang "Thất bại". KH nhận thông báo "Không tìm thấy xe". |
+| **AC-06** | Tài xế chấp nhận chuyến: Tài xế nhấn "Nhận chuyến" -> Hệ thống gán chuyến và gửi thông báo xác nhận tới KH. | **Tài xế nhận đơn** theo luồng: Tài xế xem và chấp nhận chuyến đi. | Tài xế đang online và nhận được thông báo yêu cầu. | Chuyến được gán cho tài xế. KH nhận tên, biển số xe và đánh giá tài xế. |
+| **AC-07** | Hủy chuyến từ phía Khách hàng: KH có thể hủy chuyến trước khi xe đến. | **Tính năng hủy chuyến** cho KH theo yêu cầu nghiệp vụ. | Chuyến đang ở trạng thái "Đang tìm xe" hoặc "Đã có tài xế". | Trạng thái chuyển sang "Đã hủy". Tài xế nhận thông báo hủy. Lưu lý do vào lịch sử. |
+| **AC-08** | Tài xế cập nhật trạng thái di chuyển: TX bấm các mốc: Đã đón, Bắt đầu di chuyển, Kết thúc chuyến. | **Cập nhật trạng thái chuyến đi** (Theo dõi hành trình). | Tài xế đã nhận chuyến thành công. | App KH luôn cập nhật trạng thái tương ứng theo thời gian thực. |
+| **AC-09** | Xử lý hủy chuyến từ Tài xế gặp sự cố: TX yêu cầu hủy, gửi về Admin để duyệt, không tự động hủy. | **Tài xế có thể từ chối/hủy** khi gặp sự cố (Phân quyền: Admin duyệt hủy). | TX đang thực hiện chuyến và bấm "Gặp sự cố". | Chuyến chuyển trạng thái "Chờ duyệt hủy". Admin nhận thông báo. Chuyến chỉ hủy sau khi Admin xác nhận. |
+| **AC-10** | Tự động tính toán chi phí: Hệ thống tính cước dựa trên quãng đường và thời gian thực tế khi TX kết thúc chuyến. | **Tính toán chi phí** tự động theo mô tả: Tính dựa trên km và thời gian. | Tài xế bấm "Kết thúc chuyến". | Hóa đơn hiển thị đúng số km, thời gian, phí cơ bản và phụ phí trên App KH. |
+| **AC-11** | Thanh toán đa phương thức: KH có thể thanh toán bằng Tiền mặt, Thẻ tín dụng, Ví điện tử. | **Thanh toán thông qua nhiều hình thức** (Yêu cầu từ doanh nghiệp). | Chuyến đã kết thúc và hiển thị hóa đơn. | Giao diện thanh toán hiển thị đầy đủ các phương thức cho KH lựa chọn. |
+| **AC-12** | Xử lý thanh toán thất bại: Nếu thanh toán online thất bại, hệ thống báo lỗi và cho phép đổi sang tiền mặt. | **Yêu cầu xử lý khi thanh toán thất bại** (để không gián đoạn dịch vụ). | KH chọn thanh toán online. | Popup lỗi hiện rõ lý do. Trạng thái chuyến chưa bị đánh dấu thanh toán. KH được chọn đổi phương thức. |
+| **AC-13** | Đồng bộ trạng thái thanh toán & Tài chính: Sau khi thanh toán thành công, hệ thống ghi nhận doanh thu và cập nhật báo cáo. | **Yêu cầu lưu trữ và quản lý dữ liệu tài chính** cho doanh nghiệp. | Giao dịch thanh toán thành công từ cổng. | Trạng thái đơn hàng chuyển sang "Thành công". Báo cáo tài chính cập nhật. Gửi hóa đơn cho KH. |
+| **AC-14** | Phân quyền quản trị: Nhân viên vận hành duyệt hủy/xem bản đồ; Lãnh đạo xem báo cáo tài chính. | **Phân quyền nghiệp vụ cho Admin** (Nhân viên vận hành & Ban lãnh đạo). | Người dùng quản trị đã đăng nhập vào Admin. | Menu hiển thị chính xác theo quyền. Nhân viên bị chặn (403) khi truy cập trái phép vào báo cáo tài chính. |
+| **AC-15** | Xem báo cáo thống kê: Hệ thống hiển thị số chuyến, doanh thu, tỷ lệ hủy theo ngày/tuần/tháng. | **Yêu cầu báo cáo doanh thu, lợi nhuận và hiệu quả hoạt động** của Ban lãnh đạo. | Ban lãnh đạo truy cập tab "Báo cáo". | Biểu đồ, bảng số liệu hiển thị chính xác dựa trên dữ liệu hệ thống. |
+| **AC-16** | Quản lý tình trạng xe (Map View): Admin xem bản đồ vị trí và trạng thái Online/Offline/Bận của tài xế. | **Yêu cầu quản lý tài xế, xe và trạng thái hoạt động** cho Nhân viên vận hành. | Nhân viên vận hành vào Admin. | Bản đồ hiển thị biểu tượng có màu sắc khác nhau, vị trí cập nhật liên tục (độ trễ tối đa 10s). |
+
+## Tiêu chí chấp nhận Phi chức năng (Non-functional AC)
+
+| ID | Tiêu chí chấp nhận | Nguồn gốc yêu cầu (Requirement Source) | Điều kiện / Cách kiểm tra | Ngưỡng chấp nhận (Pass/Fail) |
+| :--- | :--- | :--- | :--- | :--- |
+| **AC-NFR-01** | Thời gian phản hồi API: Từ lúc KH bấm "Đặt xe" đến lúc gửi thông báo đến TX đầu tiên ≤ 3 giây. | **NFR01 - Hiệu năng** | Stress test với 500 yêu cầu đồng thời bằng JMeter/K6. | P95 có thời gian phản hồi **≤ 3 giây**. |
+| **AC-NFR-02** | Khả năng chịu tải cao: Hệ thống không sập và ít lỗi khi tải tăng vọt. | **NFR01 - Hiệu năng & NFR02 - Khả năng mở rộng** | Mô phỏng 10.000 người dùng truy cập đồng thời trong 5 phút. | Tỷ lệ lỗi hệ thống (Error rate) **≤ 1%**. |
+| **AC-NFR-03** | Chịu lỗi thành phần (Fault Tolerance): Khi dịch vụ Thanh toán hoặc Thông báo bị lỗi, tính năng đặt xe vẫn chạy được. | **NFR03 - Tính sẵn sàng và ổn định** | Tắt thủ công service Payment/Notification trên môi trường Staging. | Quy trình đặt xe vẫn thành công. Hệ thống báo lỗi service con mà không làm sập toàn bộ App. |
+| **AC-NFR-04** | Phục hồi dữ liệu (Recovery): Hệ thống tự động chuyển sang Database dự phòng khi DB chính gặp sự cố. | **NFR03 - Tính sẵn sàng và ổn định** | Ngắt kết nối Database chính. | Hệ thống chuyển sang DB dự phòng thành công trong vòng **≤ 60 giây**. |
+| **AC-NFR-05** | Mã hóa kết nối: 100% dữ liệu từ Client đến Server được truyền qua HTTPS. | **NFR04 - Bảo mật** | Dùng Wireshark hoặc DevTools bắt gói tin mạng. | **100%** API traffic sử dụng giao thức **HTTPS (TLS 1.2 trở lên)**. |
+| **AC-NFR-06** | Bảo mật dữ liệu nhạy cảm: Không lưu mật khẩu (dạng plaintext) và số thẻ tín dụng vào Database. | **NFR04 - Bảo mật** | Truy vấn trực tiếp vào Database. | Mật khẩu lưu dạng hash (bcrypt). Số thẻ tín dụng chỉ lưu dạng Token hóa. |
+| **AC-NFR-07** | Triển khai từng phần (Hotfix): Có thể cập nhật tính năng nhỏ (VD: thêm cổng thanh toán mới) mà không cần build lại toàn bộ App. | **NFR05 - Khả năng bảo trì** & **NFR08 - Khả năng triển khai** | Phân tích mã nguồn, triển khai một bản patch nhỏ. | Chức năng mới hiển thị đúng. Người dùng đang dùng app không bị mất kết nối hay phải cập nhật lại app. |
+| **AC-NFR-08** | Dễ tích hợp mở rộng: Thêm nhà cung cấp dịch vụ mới (Zalo ZNS, cổng thanh toán mới) mà không cần sửa code lõi. | **NFR06 - Khả năng mở rộng chức năng** & **NFR07 - Khả năng tích hợp** | Phân tích kiến trúc phần mềm. | Chỉ cần cấu hình file config hoặc viết thêm 1 class kế thừa interface; không cần chỉnh sửa module Xử lý chính (Core System). |
+| **AC-NFR-09** | Không gián đoạn khi triển khai (Zero Downtime): Người dùng không gặp lỗi khi hệ thống đang được cập nhật phiên bản mới. | **NFR08 - Khả năng triển khai** | Dùng chiến lược Blue-Green/Canary Deployment trên K8s. | Trong suốt quá trình deploy (5-10 phút), không xuất hiện lỗi HTTP 502/503 trên App và API. |
+| **AC-NFR-10** | Lưu vết kiểm toán (Audit Log): Mọi thay đổi trạng thái quan trọng (Duyệt hủy đơn, đổi giá cước...) đều có log lưu trữ. | **NFR09 - Khả năng kiểm tra và truy vết** | Thực hiện hành động "Duyệt hủy đơn" trên Admin và truy vấn Database. | Bảng `Audit_Log` có bản ghi chứa đủ: `Người thực hiện`, `Thời gian`, `Hành động`, `ID đơn hàng`, `Lý do`. |
