@@ -173,18 +173,18 @@ Xây dựng một nền tảng đặt xe có khả năng hoạt động ổn đ�
         │  QUẢN LÝ CHẶT   │  QUẢN LÝ CHẶT   │
         │                 │                 │
         │  Ban giám đốc   │  Ban giám đốc   │
-        │                 │  Nhân viên       │
-        │                 │  vận hành        │
+        │                 │  Nhân viên      │
+        │                 │  vận hành       │
         │                 │                 │
         ├─────────────────┼─────────────────┤
         │                 │                 │
         │  THEO DÕI       │  GIỮ HÀI LÒNG   │
         │                 │                 │
-        │  Nhà cung cấp    │  Khách hàng     │
-        │  thông báo       │  Tài xế         │
+        │  Nhà cung cấp   │  Khách hàng     │
+        │  thông báo      │  Tài xế         │
         │                 │                 │
-        │  Nhà cung cấp    │                 │
-        │  thanh toán      │                 │
+        │  Nhà cung cấp   │                 │
+        │  thanh toán     │                 │
         │                 │                 │
         └─────────────────┴─────────────────┘
                           │
