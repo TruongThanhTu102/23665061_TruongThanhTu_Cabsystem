@@ -1563,6 +1563,7 @@ Hệ thống phải có khả năng mở rộng để:
 - Thông tin lưu vết được sử dụng để kiểm tra và xử lý khi xảy ra sự cố.
 
 # Vẽ các Use Case
+flowchart LR
 
     %% Actors
     Customer([Khách hàng])
