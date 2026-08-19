@@ -164,7 +164,7 @@ Công ty ABC cần một nền tảng CAB mới có khả năng tự động hó
 **Mục tiêu cuối cùng:**  
 Xây dựng một nền tảng đặt xe có khả năng hoạt động ổn định, bảo mật, mở rộng và dễ dàng bổ sung các chức năng mới trong tương lai.
 
-# 8. Vẽ ma trận stackholder mandit thể hiện mức độ ảnh hưởng của các vai trò
+# Vẽ ma trận stackholder mandit thể hiện mức độ ảnh hưởng của các vai trò
                     STAKEHOLDER MATRIX
                   Mức độ ảnh hưởng (POWER)
                          CAO
@@ -243,3 +243,163 @@ Xây dựng một nền tảng đặt xe có khả năng hoạt động ổn đ�
 - Theo dõi tỷ lệ chuyến hoàn thành và tỷ lệ hủy.
 - Đánh giá hiệu quả hoạt động của tài xế.
 - Cung cấp dữ liệu để ban lãnh đạo theo dõi tình hình hoạt động của doanh nghiệp.
+
+# Scope – Phạm vi của hệ thống CAB
+
+## 1. In Scope – Phạm vi thuộc hệ thống
+
+### 1.1. Quản lý khách hàng
+
+- Đăng ký tài khoản.
+- Đăng nhập.
+- Cập nhật thông tin cá nhân.
+- Quản lý thông tin tài khoản khách hàng.
+
+### 1.2. Quản lý tài xế
+
+- Đăng ký tài khoản hoặc được nhân viên vận hành tạo tài khoản.
+- Cập nhật hồ sơ tài xế.
+- Quản lý trạng thái hoạt động của tài xế.
+- Chuyển sang trạng thái sẵn sàng nhận chuyến.
+- Quản lý thông tin vị trí của tài xế.
+
+### 1.3. Quản lý phương tiện
+
+- Quản lý thông tin phương tiện của tài xế.
+- Cho phép nhân viên vận hành quản lý thông tin phương tiện.
+
+### 1.4. Đặt và quản lý chuyến xe
+
+- Khách hàng nhập điểm đón và điểm đến.
+- Khách hàng lựa chọn loại xe.
+- Khách hàng gửi yêu cầu đặt xe.
+- Hệ thống tiếp nhận và xử lý yêu cầu đặt xe.
+- Theo dõi trạng thái chuyến đi.
+- Lưu lịch sử chuyến đi.
+
+### 1.5. Tìm kiếm và phân công tài xế
+
+- Xác định tài xế phù hợp dựa trên:
+  - Vị trí.
+  - Trạng thái sẵn sàng.
+  - Các tiêu chí vận hành khác.
+- Ưu tiên tài xế phù hợp và gần khách hàng.
+- Gửi yêu cầu chuyến đến tài xế.
+- Cho phép tài xế chấp nhận hoặc từ chối chuyến.
+- Nếu tài xế không phản hồi hoặc từ chối, hệ thống tiếp tục tìm tài xế khác.
+- Thông báo cho khách hàng nếu không tìm được tài xế.
+
+### 1.6. Theo dõi và cập nhật chuyến đi
+
+Tài xế có thể cập nhật các trạng thái:
+
+- Đã đến điểm đón.
+- Đã đón khách.
+- Đang di chuyển.
+- Hoàn thành chuyến.
+
+Khách hàng có thể theo dõi trạng thái hiện tại của chuyến đi.
+
+### 1.7. Tính cước và thanh toán
+
+- Tính số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi.
+- Hỗ trợ thanh toán bằng tiền mặt.
+- Hỗ trợ thanh toán điện tử.
+- Tích hợp với nhà cung cấp thanh toán bên ngoài.
+- Không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.
+- Xử lý trường hợp thanh toán điện tử thất bại.
+- Cho phép xử lý lại thanh toán theo chính sách của doanh nghiệp.
+- Lưu và tra cứu thông tin giao dịch.
+
+### 1.8. Thông báo
+
+Hệ thống gửi thông báo cho khách hàng khi:
+
+- Yêu cầu đặt xe được tiếp nhận.
+- Có tài xế nhận chuyến.
+- Tài xế đến điểm đón.
+- Chuyến đi hoàn thành.
+- Thanh toán có kết quả.
+
+Tài xế nhận thông báo khi:
+
+- Có chuyến mới.
+- Có thay đổi liên quan đến chuyến đang thực hiện.
+
+Hệ thống có khả năng mở rộng thêm các kênh thông báo trong tương lai.
+
+### 1.9. Quản trị và vận hành
+
+Nhân viên vận hành có thể:
+
+- Quản lý khách hàng.
+- Quản lý tài xế.
+- Quản lý phương tiện.
+- Quản lý chuyến đi.
+- Xem các chuyến đang diễn ra.
+- Kiểm tra trạng thái tài xế.
+- Hỗ trợ xử lý các chuyến bị lỗi.
+- Tra cứu lịch sử giao dịch.
+- Phân quyền các chức năng quản trị.
+
+### 1.10. Báo cáo
+
+Hệ thống hỗ trợ báo cáo:
+
+- Số lượng chuyến.
+- Doanh thu.
+- Tỷ lệ chuyến hoàn thành.
+- Tỷ lệ hủy.
+- Hiệu quả hoạt động của tài xế.
+
+### 1.11. Bảo mật và kiểm soát
+
+- Xác thực khách hàng và tài xế trước khi sử dụng các chức năng yêu cầu tài khoản.
+- Kiểm soát quyền truy cập đối với chức năng quản trị.
+- Bảo vệ thông tin cá nhân.
+- Bảo vệ thông tin phương tiện.
+- Bảo vệ dữ liệu vị trí.
+- Bảo vệ dữ liệu giao dịch.
+- Lưu vết các thao tác quan trọng để phục vụ kiểm tra khi có sự cố.
+
+### 1.12. Khả năng mở rộng
+
+- Hệ thống có khả năng phục vụ số lượng lớn khách hàng và tài xế.
+- Các thành phần có khả năng mở rộng độc lập khi tải tăng.
+- Có thể triển khai chức năng mới từng phần.
+- Hạn chế ảnh hưởng đến các chức năng đang hoạt động khi bổ sung chức năng mới.
+- Có khả năng bổ sung loại dịch vụ mới.
+- Có khả năng bổ sung phương thức thanh toán mới.
+- Có khả năng tích hợp thêm nhà cung cấp thông báo.
+- Có thể thay đổi một số thành phần kỹ thuật mà không phải xây dựng lại toàn bộ ứng dụng.
+
+---
+
+# 2. Out of Scope – Ngoài phạm vi hiện tại
+
+Tài liệu **chưa xác định rõ** một số nội dung. Vì vậy, các nội dung này cần được BA làm rõ với các bên liên quan trước khi đưa vào phạm vi chính thức:
+
+- Chi tiết công thức tính cước.
+- Tiêu chí cụ thể để ưu tiên tài xế.
+- Thời gian tài xế phải phản hồi yêu cầu chuyến.
+- Chính sách hủy chuyến.
+- Cách xử lý cụ thể khi mất kết nối mạng.
+- Thời gian lưu trữ dữ liệu.
+
+> Lưu ý: Đây không nhất thiết là các chức năng bị loại khỏi dự án. Đây là **các vấn đề chưa được xác định rõ trong tài liệu và cần xác nhận thêm với khách hàng**.
+
+---
+
+# 3. Tóm tắt phạm vi
+
+Hệ thống CAB tập trung hỗ trợ toàn bộ quy trình:
+
+**Đặt xe → Tìm tài xế → Phân công tài xế → Thực hiện chuyến → Tính cước → Thanh toán → Thông báo → Đánh giá → Lưu trữ và quản lý dữ liệu**
+
+Hệ thống phục vụ 3 nhóm người dùng chính:
+
+- **Khách hàng**
+- **Tài xế**
+- **Nhân viên vận hành**
+
+Ngoài ra, hệ thống tích hợp với các **nhà cung cấp dịch vụ bên ngoài**, đặc biệt là nhà cung cấp thanh toán và các kênh thông báo.
