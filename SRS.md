@@ -163,7 +163,8 @@ Công ty ABC cần một nền tảng CAB mới có khả năng tự động hó
 
 **Mục tiêu cuối cùng:**  
 Xây dựng một nền tảng đặt xe có khả năng hoạt động ổn định, bảo mật, mở rộng và dễ dàng bổ sung các chức năng mới trong tương lai.
-# 7. Vẽ ma trận stackholder mandit thể hiện mức độ ảnh hưởng của các vai trò
+
+# 8. Vẽ ma trận stackholder mandit thể hiện mức độ ảnh hưởng của các vai trò
                     STAKEHOLDER MATRIX
                   Mức độ ảnh hưởng (POWER)
                          CAO
@@ -191,3 +192,54 @@ Xây dựng một nền tảng đặt xe có khả năng hoạt động ổn đ�
                          THẤP
              THẤP                         CAO
                     Mức độ quan tâm
+
+# Business Goals
+
+## Business Goals 1. Tự động hóa hoạt động đặt xe
+
+- Tự động hóa quy trình từ khi khách hàng tạo yêu cầu đến khi chuyến xe hoàn thành.
+- Giảm sự phụ thuộc vào việc phân công tài xế thủ công.
+- Tự động tìm kiếm và phân công tài xế phù hợp cho khách hàng.
+
+## Business Goals 2. Nâng cao chất lượng dịch vụ khách hàng
+
+- Cho phép khách hàng dễ dàng đặt xe.
+- Cho phép khách hàng theo dõi trạng thái chuyến đi.
+- Cung cấp thông tin về tài xế và thời gian dự kiến đến.
+- Hỗ trợ khách hàng thanh toán và đánh giá tài xế sau chuyến.
+
+## Business Goals 3. Nâng cao hiệu quả vận hành
+
+- Hỗ trợ nhân viên vận hành quản lý khách hàng, tài xế, phương tiện và chuyến đi.
+- Theo dõi các chuyến đang diễn ra và trạng thái tài xế.
+- Hỗ trợ xử lý các trường hợp chuyến đi bị lỗi.
+- Cung cấp dữ liệu và báo cáo để theo dõi hoạt động kinh doanh.
+
+## Business Goals 4. Hỗ trợ mở rộng quy mô kinh doanh
+
+- Xây dựng hệ thống có khả năng phục vụ số lượng lớn khách hàng và tài xế.
+- Cho phép các thành phần của hệ thống mở rộng độc lập khi nhu cầu tăng cao.
+- Đảm bảo hệ thống hoạt động ổn định trong thời điểm nhu cầu tăng cao.
+
+## Business Goals 5. Xây dựng nền tảng có khả năng phát triển lâu dài
+
+- Cho phép bổ sung các loại dịch vụ mới.
+- Cho phép thêm các phương thức thanh toán mới.
+- Cho phép tích hợp thêm các nhà cung cấp dịch vụ thông báo.
+- Có thể thay đổi một số thành phần kỹ thuật mà không phải xây dựng lại toàn bộ hệ thống.
+- Cho phép triển khai các chức năng mới từng phần và hạn chế ảnh hưởng đến các chức năng đang hoạt động.
+
+## Business Goals 6. Đảm bảo an toàn và bảo mật dữ liệu
+
+- Bảo vệ thông tin cá nhân của khách hàng và tài xế.
+- Bảo vệ thông tin phương tiện, dữ liệu vị trí và dữ liệu giao dịch.
+- Kiểm soát quyền truy cập đối với các chức năng quản trị.
+- Lưu vết các thao tác quan trọng để phục vụ kiểm tra và xử lý sự cố.
+
+## Business Goals 7. Nâng cao hiệu quả quản lý và ra quyết định
+
+- Cung cấp báo cáo về số lượng chuyến.
+- Theo dõi doanh thu.
+- Theo dõi tỷ lệ chuyến hoàn thành và tỷ lệ hủy.
+- Đánh giá hiệu quả hoạt động của tài xế.
+- Cung cấp dữ liệu để ban lãnh đạo theo dõi tình hình hoạt động của doanh nghiệp.
