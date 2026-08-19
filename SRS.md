@@ -1194,4 +1194,370 @@ Tài liệu yêu cầu doanh nghiệp cần làm rõ thêm:
 - **Công thức tính cước**.
 - **Thời gian lưu trữ dữ liệu**.
 
-Các nội dung này chưa nên tự đặt ra quy tắc cụ thể vì tài liệu xác định đây là những vấn đề cần Business Analyst làm rõ với các bên liên quan trước khi phát triển. :contentReference[oaicite:1]{index=1}
+Các nội dung này chưa nên tự đặt ra quy tắc cụ thể vì tài liệu xác định đây là những vấn đề cần Business Analyst làm rõ với các bên liên quan trước khi phát triển. 
+
+# Mô hình hóa dữ liệu – CAB System
+
+## 1. Các thực thể chính
+
+### 1.1. Customer – Khách hàng
+
+Lưu thông tin người sử dụng dịch vụ đặt xe.
+
+**Thuộc tính chính:**
+- CustomerID
+- FullName
+- Phone
+- Email
+- Password
+- Address
+- CreatedAt
+
+**Chức năng liên quan:**
+- Đăng ký / đăng nhập.
+- Cập nhật thông tin cá nhân.
+- Tạo yêu cầu đặt xe.
+- Xem lịch sử chuyến đi.
+- Thanh toán.
+- Đánh giá tài xế.
+
+---
+
+### 1.2. Driver – Tài xế
+
+Lưu thông tin tài xế sử dụng hệ thống.
+
+**Thuộc tính chính:**
+- DriverID
+- FullName
+- Phone
+- Email
+- Password
+- Status
+- IsAvailable
+- CurrentLocation
+
+**Chức năng liên quan:**
+- Đăng ký / đăng nhập.
+- Cập nhật hồ sơ.
+- Cập nhật trạng thái hoạt động.
+- Bật / tắt trạng thái sẵn sàng.
+- Nhận / từ chối chuyến.
+- Cập nhật trạng thái chuyến.
+- Cập nhật vị trí.
+
+---
+
+### 1.3. Vehicle – Phương tiện
+
+Lưu thông tin phương tiện của tài xế.
+
+**Thuộc tính chính:**
+- VehicleID
+- DriverID
+- VehicleType
+- LicensePlate
+- VehicleStatus
+
+**Mối quan hệ:**
+- Một tài xế có thể quản lý phương tiện.
+- Phương tiện được sử dụng để thực hiện chuyến đi.
+
+---
+
+### 1.4. Booking / Trip – Chuyến đặt xe
+
+Lưu thông tin yêu cầu và chuyến đi của khách hàng.
+
+**Thuộc tính chính:**
+- TripID
+- CustomerID
+- DriverID
+- VehicleID
+- PickupLocation
+- Destination
+- VehicleType
+- Status
+- RequestedAt
+- StartedAt
+- CompletedAt
+
+**Trạng thái chuyến có thể gồm:**
+- Searching
+- DriverAssigned
+- DriverArrived
+- PassengerPickedUp
+- InProgress
+- Completed
+
+**Mối quan hệ:**
+- Một khách hàng có thể tạo nhiều chuyến.
+- Một tài xế có thể thực hiện nhiều chuyến.
+- Một chuyến thuộc về một khách hàng.
+- Một chuyến có thể được phân công cho một tài xế.
+
+---
+
+### 1.5. DriverAssignment – Phân công tài xế
+
+Lưu thông tin quá trình hệ thống tìm và phân công tài xế.
+
+**Thuộc tính chính:**
+- AssignmentID
+- TripID
+- DriverID
+- AssignmentStatus
+- ResponseTime
+- AssignedAt
+
+**Mục đích:**
+- Theo dõi tài xế được đề xuất.
+- Ghi nhận tài xế chấp nhận hoặc từ chối.
+- Hỗ trợ trường hợp tài xế không phản hồi.
+- Cho phép hệ thống tiếp tục tìm tài xế khác.
+
+---
+
+### 1.6. Payment – Thanh toán
+
+Lưu thông tin giao dịch thanh toán.
+
+**Thuộc tính chính:**
+- PaymentID
+- TripID
+- Amount
+- PaymentMethod
+- PaymentStatus
+- TransactionTime
+
+**PaymentMethod:**
+- Cash
+- Electronic
+
+**PaymentStatus:**
+- Pending
+- Success
+- Failed
+
+> Không lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán trong hệ thống CAB.
+
+---
+
+### 1.7. Rating – Đánh giá
+
+Lưu đánh giá của khách hàng đối với tài xế sau chuyến đi.
+
+**Thuộc tính chính:**
+- RatingID
+- TripID
+- CustomerID
+- DriverID
+- Rating
+- Comment
+- CreatedAt
+
+**Mối quan hệ:**
+- Khách hàng đánh giá tài xế sau khi chuyến hoàn thành.
+
+---
+
+### 1.8. Notification – Thông báo
+
+Lưu thông tin các thông báo được gửi đến khách hàng hoặc tài xế.
+
+**Thuộc tính chính:**
+- NotificationID
+- UserID
+- TripID
+- NotificationType
+- Message
+- Status
+- CreatedAt
+
+**Các loại thông báo:**
+- Yêu cầu đặt xe được tiếp nhận.
+- Tài xế nhận chuyến.
+- Tài xế đến điểm đón.
+- Chuyến hoàn thành.
+- Kết quả thanh toán.
+- Chuyến mới cho tài xế.
+- Thay đổi liên quan đến chuyến.
+
+---
+
+### 1.9. User / Staff – Nhân viên vận hành
+
+Lưu thông tin nhân viên sử dụng chức năng quản trị.
+
+**Thuộc tính chính:**
+- StaffID
+- FullName
+- Username
+- Password
+- Role
+- Status
+
+**Chức năng:**
+- Quản lý khách hàng.
+- Quản lý tài xế.
+- Quản lý phương tiện.
+- Quản lý chuyến đi.
+- Tra cứu giao dịch.
+- Xử lý chuyến bị lỗi.
+- Thực hiện chức năng theo quyền được cấp.
+
+---
+
+# 2. Mối quan hệ giữa các thực thể
+
+| Quan hệ | Cardinality | Ý nghĩa |
+|---|---|---|
+| Customer → Trip | 1 : N | Một khách hàng có thể tạo nhiều chuyến |
+| Driver → Trip | 1 : N | Một tài xế có thể thực hiện nhiều chuyến |
+| Driver → Vehicle | 1 : N | Một tài xế có thể có/quản lý phương tiện |
+| Trip → Payment | 1 : 1 | Một chuyến có thông tin thanh toán |
+| Trip → Rating | 1 : 0..1 | Một chuyến có thể có đánh giá sau khi hoàn thành |
+| Trip → DriverAssignment | 1 : N | Một chuyến có thể có nhiều lần đề xuất tài xế |
+| Driver → DriverAssignment | 1 : N | Một tài xế có thể được đề xuất cho nhiều chuyến |
+| Trip → Notification | 1 : N | Một chuyến có thể phát sinh nhiều thông báo |
+| Customer → Notification | 1 : N | Khách hàng có thể nhận nhiều thông báo |
+| Driver → Notification | 1 : N | Tài xế có thể nhận nhiều thông báo |
+
+---
+
+# 3. Mô hình dữ liệu tổng quát
+
+```text
+                    ┌──────────────┐
+                    │   CUSTOMER   │
+                    └──────┬───────┘
+                           │ 1
+                           │
+                           │ N
+                    ┌──────▼───────┐
+                    │     TRIP     │
+                    └──┬───┬───┬───┘
+                       │   │   │
+              1:N      │   │   │ 1:1
+                       │   │   └──────────────┐
+                       │   │                  │
+                       │   │             ┌────▼─────┐
+                       │   │             │  PAYMENT  │
+                       │   │             └──────────┘
+                       │   │
+                       │   │
+                       │   └──────────────┐
+                       │                  │
+                       │             ┌────▼─────┐
+                       │             │  RATING   │
+                       │             └──────────┘
+                       │
+                       │ 1:N
+                ┌──────▼──────────┐
+                │ DRIVER ASSIGNMENT│
+                └──────┬──────────┘
+                       │ N
+                       │
+                       │ 1
+                ┌──────▼───────┐
+                │    DRIVER    │
+                └──────┬───────┘
+                       │
+                       │ 1:N
+                ┌──────▼───────┐
+                │   VEHICLE    │
+                └──────────────┘
+
+                    TRIP
+                     │
+                     │ 1:N
+                     ▼
+               ┌──────────────┐
+               │ NOTIFICATION │
+               └──────────────┘
+```
+# Non-Functional Requirements – Yêu cầu phi chức năng
+
+## NFR01 – Hiệu năng (Performance)
+
+- Hệ thống phải có khả năng phục vụ số lượng lớn khách hàng và tài xế.
+- Hệ thống phải duy trì khả năng hoạt động ổn định khi số lượng người dùng và yêu cầu đặt xe tăng cao.
+- Các thành phần của hệ thống cần có khả năng mở rộng độc lập khi tải tăng.
+
+> Chưa có yêu cầu cụ thể về thời gian phản hồi hoặc số request/giây trong tài liệu.
+
+---
+
+## NFR02 – Khả năng mở rộng (Scalability)
+
+- Hệ thống phải có khả năng mở rộng khi số lượng khách hàng và tài xế tăng.
+- Các thành phần có thể được mở rộng độc lập theo nhu cầu.
+- Việc mở rộng một thành phần không được yêu cầu mở rộng toàn bộ hệ thống.
+
+---
+
+## NFR03 – Tính sẵn sàng và ổn định (Availability & Reliability)
+
+- Hệ thống phải hoạt động ổn định trong thời điểm nhu cầu đặt xe tăng cao.
+- Lỗi của một thành phần như thanh toán hoặc thông báo không được làm toàn bộ hệ thống đặt xe ngừng hoạt động.
+- Hệ thống cần có khả năng tiếp tục phục vụ các chức năng chính khi một thành phần gặp sự cố.
+
+---
+
+## NFR04 – Bảo mật (Security)
+
+Hệ thống phải bảo vệ các loại dữ liệu:
+
+- Thông tin cá nhân của khách hàng.
+- Thông tin cá nhân của tài xế.
+- Thông tin phương tiện.
+- Dữ liệu vị trí.
+- Dữ liệu giao dịch.
+
+Ngoài ra:
+
+- Người dùng phải được xác thực trước khi sử dụng các chức năng yêu cầu tài khoản.
+- Chức năng quản trị phải được phân quyền.
+- Các thao tác quan trọng phải được lưu vết.
+- Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.
+
+---
+
+## NFR05 – Khả năng bảo trì (Maintainability)
+
+- Hệ thống phải cho phép thay đổi một số thành phần kỹ thuật mà không phải xây dựng lại toàn bộ ứng dụng.
+- Các chức năng mới có thể được triển khai từng phần.
+- Việc thay đổi hoặc bổ sung một chức năng không nên gây ảnh hưởng lớn đến các chức năng đang hoạt động.
+
+---
+
+## NFR06 – Khả năng mở rộng chức năng (Extensibility)
+
+Hệ thống phải có khả năng mở rộng để:
+
+- Bổ sung loại dịch vụ mới.
+- Bổ sung phương thức thanh toán mới.
+- Tích hợp thêm nhà cung cấp dịch vụ thông báo.
+- Thay đổi hoặc thay thế một số thành phần kỹ thuật.
+
+---
+
+## NFR07 – Khả năng tích hợp (Interoperability)
+
+- Hệ thống phải có khả năng tích hợp với nhà cung cấp thanh toán bên ngoài.
+- Hệ thống phải có khả năng tích hợp với các nhà cung cấp dịch vụ thông báo.
+- Có thể bổ sung thêm các nhà cung cấp hoặc kênh dịch vụ mới trong tương lai.
+
+---
+
+## NFR08 – Khả năng triển khai (Deployability)
+
+- Các chức năng mới phải có khả năng được triển khai từng phần.
+- Việc triển khai chức năng mới phải hạn chế ảnh hưởng đến các chức năng đang hoạt động.
+
+---
+
+## NFR09 – Khả năng kiểm tra và truy vết (Auditability)
+
+- Hệ thống phải lưu vết các thao tác quan trọng.
+- Thông tin lưu vết được sử dụng để kiểm tra và xử lý khi xảy ra sự cố.
