@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Payment API
+  description: API thanh toán - Tính cước, xử lý thanh toán
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /payments/{tripId}/info:
+    get:
+      tags:
+        - Payment
+      summary: Lấy thông tin thanh toán
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Thông tin thanh toán
+
+  /payments/{tripId}/process:
+    post:
+      tags:
+        - Payment
+      summary: Xử lý thanh toán
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - paymentMethod
+              properties:
+                paymentMethod:
+                  type: string
+                  enum:
+                    - CASH
+                    - CARD
+                    - E_WALLET
+                  example: 'CARD'
+                paymentData:
+                  type: object
+                  description: Dữ liệu thanh toán (tùy theo phương thức)
+      responses:
+        '200':
+          description: Thanh toán thành công
+        '400':
+          description: Thanh toán thất bại
+
+  /payments/history:
+    get:
+      tags:
+        - Payment
+      summary: Lịch sử thanh toán
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Danh sách lịch sử thanh toán
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

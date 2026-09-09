@@ -1,0 +1,321 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Admin API
+  description: API quản trị cho nhân viên vận hành
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /admin/customers:
+    get:
+      tags:
+        - Admin
+      summary: Danh sách khách hàng
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Tìm kiếm theo tên hoặc số điện thoại
+      responses:
+        '200':
+          description: Danh sách khách hàng
+
+    post:
+      tags:
+        - Admin
+      summary: Tạo tài khoản khách hàng (thủ công)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - fullName
+              properties:
+                phone:
+                  type: string
+                fullName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+      responses:
+        '201':
+          description: Tạo thành công
+
+  /admin/drivers:
+    get:
+      tags:
+        - Admin
+      summary: Danh sách tài xế
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - ACTIVE
+              - INACTIVE
+      responses:
+        '200':
+          description: Danh sách tài xế
+
+    post:
+      tags:
+        - Admin
+      summary: Tạo tài khoản tài xế (thủ công)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - fullName
+                - vehicleType
+                - licensePlate
+              properties:
+                phone:
+                  type: string
+                fullName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                vehicleType:
+                  type: string
+                  enum:
+                    - Xe máy
+                    - Xe ô tô 4 chỗ
+                    - Xe ô tô 7 chỗ
+                    - Xe ô tô 16 chỗ
+                licensePlate:
+                  type: string
+                vehicleColor:
+                  type: string
+      responses:
+        '201':
+          description: Tạo thành công
+
+  /admin/drivers/{driverId}:
+    put:
+      tags:
+        - Admin
+      summary: Cập nhật thông tin tài xế
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                phone:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - ACTIVE
+                    - INACTIVE
+                vehicleType:
+                  type: string
+                licensePlate:
+                  type: string
+      responses:
+        '200':
+          description: Cập nhật thành công
+
+    delete:
+      tags:
+        - Admin
+      summary: Xóa tài khoản tài xế
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Xóa thành công
+
+  /admin/trips:
+    get:
+      tags:
+        - Admin
+      summary: Danh sách chuyến đi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - SEARCHING
+              - DRIVER_ASSIGNED
+              - IN_PROGRESS
+              - COMPLETED
+              - CANCELLED
+              - FAILED
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Danh sách chuyến đi
+
+  /admin/trips/{tripId}/resolve:
+    post:
+      tags:
+        - Admin
+      summary: Xử lý chuyến đi bị lỗi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - CANCEL
+                    - COMPLETE
+                    - REFUND
+                  example: 'CANCEL'
+                note:
+                  type: string
+                  description: Ghi chú lý do xử lý
+      responses:
+        '200':
+          description: Xử lý thành công
+
+  /admin/audit-logs:
+    get:
+      tags:
+        - Admin
+      summary: Lưu vết thao tác quản trị
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: staffId
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: action
+          in: query
+          schema:
+            type: string
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Danh sách audit logs
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

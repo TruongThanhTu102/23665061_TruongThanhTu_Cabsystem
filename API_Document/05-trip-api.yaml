@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Trip API
+  description: API quản lý chuyến đi - Cập nhật trạng thái, theo dõi
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /trips/{tripId}/status:
+    patch:
+      tags:
+        - Trip
+      summary: Cập nhật trạng thái chuyến đi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - DRIVER_ARRIVED
+                    - PASSENGER_PICKED_UP
+                    - IN_PROGRESS
+                    - COMPLETED
+                  example: 'PASSENGER_PICKED_UP'
+                note:
+                  type: string
+      responses:
+        '200':
+          description: Cập nhật trạng thái thành công
+
+  /trips/{tripId}/track:
+    get:
+      tags:
+        - Trip
+      summary: Theo dõi chuyến đi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Thông tin theo dõi chuyến đi
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

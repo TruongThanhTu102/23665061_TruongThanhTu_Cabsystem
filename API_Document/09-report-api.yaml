@@ -1,0 +1,234 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Report API
+  description: API báo cáo và thống kê
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /reports/dashboard:
+    get:
+      tags:
+        - Report
+      summary: Dashboard tổng quan
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum:
+              - TODAY
+              - WEEK
+              - MONTH
+              - YEAR
+            default: TODAY
+      responses:
+        '200':
+          description: Dữ liệu dashboard
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalTrips:
+                    type: integer
+                    description: Tổng số chuyến
+                  totalRevenue:
+                    type: number
+                    format: double
+                    description: Tổng doanh thu
+                  completionRate:
+                    type: number
+                    format: double
+                    description: Tỷ lệ hoàn thành
+                  cancellationRate:
+                    type: number
+                    format: double
+                    description: Tỷ lệ hủy
+                  activeDrivers:
+                    type: integer
+                    description: Số tài xế đang hoạt động
+                  totalCustomers:
+                    type: integer
+                    description: Tổng số khách hàng
+
+  /reports/revenue:
+    get:
+      tags:
+        - Report
+      summary: Báo cáo doanh thu
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fromDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum:
+              - DAY
+              - WEEK
+              - MONTH
+            default: DAY
+      responses:
+        '200':
+          description: Báo cáo doanh thu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalRevenue:
+                    type: number
+                    format: double
+                  cashPayment:
+                    type: number
+                    format: double
+                  electronicPayment:
+                    type: number
+                    format: double
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        period:
+                          type: string
+                        amount:
+                          type: number
+                          format: double
+                        count:
+                          type: integer
+
+  /reports/driver-performance:
+    get:
+      tags:
+        - Report
+      summary: Báo cáo hiệu quả tài xế
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fromDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: driverId
+          in: query
+          schema:
+            type: integer
+            format: int64
+          description: Lọc theo tài xế cụ thể (nếu có)
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Báo cáo hiệu quả tài xế
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  drivers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        driverId:
+                          type: integer
+                        driverName:
+                          type: string
+                        totalTrips:
+                          type: integer
+                        completedTrips:
+                          type: integer
+                        cancelledTrips:
+                          type: integer
+                        averageRating:
+                          type: number
+                          format: double
+                        totalRevenue:
+                          type: number
+                          format: double
+                        acceptanceRate:
+                          type: number
+                          format: double
+
+  /reports/trips:
+    get:
+      tags:
+        - Report
+      summary: Báo cáo chi tiết chuyến đi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fromDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - COMPLETED
+              - CANCELLED
+              - ALL
+            default: ALL
+        - name: vehicleType
+          in: query
+          schema:
+            type: string
+          description: Lọc theo loại xe
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Báo cáo chi tiết chuyến đi
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

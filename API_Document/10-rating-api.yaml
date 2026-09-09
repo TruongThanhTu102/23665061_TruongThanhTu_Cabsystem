@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Rating API
+  description: API đánh giá tài xế sau chuyến đi
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /ratings/{tripId}:
+    post:
+      tags:
+        - Rating
+      summary: Đánh giá tài xế sau chuyến đi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  description: Điểm đánh giá từ 1-5
+                  example: 5
+                comment:
+                  type: string
+                  description: Nhận xét (tùy chọn)
+                  example: 'Tài xế thân thiện, lái xe an toàn'
+      responses:
+        '201':
+          description: Đánh giá thành công
+        '400':
+          description: Dữ liệu không hợp lệ
+        '404':
+          description: Không tìm thấy chuyến đi
+
+  /ratings/driver/{driverId}:
+    get:
+      tags:
+        - Rating
+      summary: Xem đánh giá của tài xế
+      description: Lấy danh sách các đánh giá của tài xế (dành cho khách hàng xem trước khi đặt)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Danh sách đánh giá
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  averageRating:
+                    type: number
+                    format: double
+                    description: Điểm trung bình
+                  totalRatings:
+                    type: integer
+                    description: Tổng số lượt đánh giá
+                  ratings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rating:
+                          type: integer
+                        comment:
+                          type: string
+                        customerName:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

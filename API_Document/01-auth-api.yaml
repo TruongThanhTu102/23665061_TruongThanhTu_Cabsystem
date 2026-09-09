@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Authentication API
+  description: API xác thực cho hệ thống CAB - Đăng ký, đăng nhập, OTP
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /auth/register/customer:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng ký tài khoản khách hàng
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - password
+                - fullName
+              properties:
+                phone:
+                  type: string
+                  example: '0912345678'
+                password:
+                  type: string
+                  minLength: 8
+                fullName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                address:
+                  type: string
+      responses:
+        '201':
+          description: Đăng ký thành công
+
+  /auth/register/driver:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng ký tài khoản tài xế
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - password
+                - fullName
+                - vehicleType
+                - licensePlate
+              properties:
+                phone:
+                  type: string
+                  example: '0987654321'
+                password:
+                  type: string
+                  minLength: 8
+                fullName:
+                  type: string
+                vehicleType:
+                  type: string
+                  enum:
+                    - Xe máy
+                    - Xe ô tô 4 chỗ
+                    - Xe ô tô 7 chỗ
+                    - Xe ô tô 16 chỗ
+                licensePlate:
+                  type: string
+                vehicleColor:
+                  type: string
+      responses:
+        '201':
+          description: Đăng ký thành công
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng nhập hệ thống
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - password
+              properties:
+                phone:
+                  type: string
+                  example: '0912345678'
+                password:
+                  type: string
+                  example: 'SecurePass123'
+                userType:
+                  type: string
+                  enum:
+                    - CUSTOMER
+                    - DRIVER
+                    - STAFF
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      refreshToken:
+                        type: string
+                      expiresIn:
+                        type: integer
+                      user:
+                        type: object
+
+  /auth/verify-otp:
+    post:
+      tags:
+        - Authentication
+      summary: Xác thực OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - otp
+              properties:
+                phone:
+                  type: string
+                  example: '0912345678'
+                otp:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+                  example: '123456'
+      responses:
+        '200':
+          description: Xác thực thành công
+
+  /auth/refresh-token:
+    post:
+      tags:
+        - Authentication
+      summary: Làm mới JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Làm mới thành công
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng xuất
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Đăng xuất thành công
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

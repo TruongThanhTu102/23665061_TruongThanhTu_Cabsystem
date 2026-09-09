@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Booking API
+  description: API đặt xe - Tạo yêu cầu, hủy chuyến
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /bookings:
+    post:
+      tags:
+        - Booking
+      summary: Tạo yêu cầu đặt xe
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pickupLocation
+                - destination
+                - vehicleType
+              properties:
+                pickupLocation:
+                  type: object
+                  required:
+                    - address
+                    - latitude
+                    - longitude
+                  properties:
+                    address:
+                      type: string
+                      example: '123 Đường ABC, Quận 1, TP.HCM'
+                    latitude:
+                      type: number
+                      format: double
+                      example: 10.7769
+                    longitude:
+                      type: number
+                      format: double
+                      example: 106.7009
+                destination:
+                  type: object
+                  required:
+                    - address
+                    - latitude
+                    - longitude
+                  properties:
+                    address:
+                      type: string
+                      example: 'Sân bay Tân Sơn Nhất, TP.HCM'
+                    latitude:
+                      type: number
+                      format: double
+                      example: 10.8182
+                    longitude:
+                      type: number
+                      format: double
+                      example: 106.6519
+                vehicleType:
+                  type: string
+                  enum:
+                    - Xe máy
+                    - Xe ô tô 4 chỗ
+                    - Xe ô tô 7 chỗ
+                    - Xe ô tô 16 chỗ
+                  example: 'Xe ô tô 4 chỗ'
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Tạo yêu cầu thành công
+
+  /bookings/{tripId}/cancel:
+    post:
+      tags:
+        - Booking
+      summary: Hủy chuyến đi
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Thay đổi kế hoạch'
+                cancellationType:
+                  type: string
+                  enum:
+                    - CUSTOMER_CANCELLED
+                    - DRIVER_CANCELLED
+                    - SYSTEM_CANCELLED
+      responses:
+        '200':
+          description: Hủy chuyến thành công
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

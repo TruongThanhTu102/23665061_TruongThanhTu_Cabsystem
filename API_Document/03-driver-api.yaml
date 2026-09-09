@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: CAB System - Driver API
+  description: API quản lý tài xế - Thông tin, trạng thái, vị trí
+  version: 1.0.0
+servers:
+  - url: https://api.cab-system.com/v1
+    description: Production server
+
+paths:
+  /drivers/profile:
+    get:
+      tags:
+        - Driver
+      summary: Lấy thông tin tài xế
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Thông tin tài xế
+
+    put:
+      tags:
+        - Driver
+      summary: Cập nhật thông tin tài xế
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                vehicleType:
+                  type: string
+                  enum:
+                    - Xe máy
+                    - Xe ô tô 4 chỗ
+                    - Xe ô tô 7 chỗ
+                    - Xe ô tô 16 chỗ
+                licensePlate:
+                  type: string
+                vehicleColor:
+                  type: string
+      responses:
+        '200':
+          description: Cập nhật thành công
+
+  /drivers/status:
+    patch:
+      tags:
+        - Driver
+      summary: Cập nhật trạng thái hoạt động
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - isAvailable
+              properties:
+                isAvailable:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Cập nhật trạng thái thành công
+
+  /drivers/location:
+    patch:
+      tags:
+        - Driver
+      summary: Cập nhật vị trí tài xế
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - latitude
+                - longitude
+              properties:
+                latitude:
+                  type: number
+                  format: double
+                  example: 10.7769
+                longitude:
+                  type: number
+                  format: double
+                  example: 106.7009
+      responses:
+        '200':
+          description: Cập nhật vị trí thành công
+
+  /drivers/trips/current:
+    get:
+      tags:
+        - Driver
+      summary: Chuyến đi hiện tại
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Thông tin chuyến đi hiện tại
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
